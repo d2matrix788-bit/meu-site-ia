@@ -1,11 +1,11 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8">
-  <title>IA Texto em Voz</title>
+  <title>Voz Anime</title>
   <style>
     body {
-      background: #0f0f0f;
+      background: radial-gradient(circle, #0b0033, #000);
       color: #fff;
       font-family: Arial, sans-serif;
       text-align: center;
@@ -14,51 +14,85 @@
     textarea, button, select {
       width: 90%;
       max-width: 420px;
-      margin-top: 10px;
-      padding: 12px;
+      margin-top: 12px;
+      padding: 14px;
       font-size: 16px;
-      border-radius: 6px;
+      border-radius: 8px;
       border: none;
     }
     button {
-      background: #7b2cff;
+      background: linear-gradient(135deg, #ff2cdf, #7b2cff);
       color: white;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+    select {
+      background: #140033;
+      color: #fff;
     }
   </style>
 </head>
 <body>
 
-  <h1>🎙️ IA Texto em Voz</h1>
-  <p>Funciona no celular</p>
+  <h1>✨🎌 VOZ ANIME</h1>
+  <p>Estilo anime exagerado / emocional</p>
 
-  <textarea id="texto" rows="4" placeholder="Digite seu texto..."></textarea>
+  <textarea id="texto" rows="4"
+    placeholder="Ex: Eu nunca vou desistir!!! Esse é o meu destino!!!"></textarea>
 
-  <select id="tipoVoz">
-    <option value="masc">Voz masculina</option>
-    <option value="fem">Voz feminina</option>
+  <select id="anime">
+    <option value="prota">🔥 Protagonista Determinado</option>
+    <option value="vilao">😈 Vilão Anime</option>
+    <option value="tsundere">💥 Tsundere / Explosiva</option>
+    <option value="narrador">🎙️ Narrador Épico</option>
   </select>
 
-  <button onclick="falar()">▶️ Falar</button>
+  <button onclick="falar()">▶️ DAR VOZ</button>
 
   <script>
     function falar() {
-      const texto = document.getElementById("texto").value;
-      const tipo = document.getElementById("tipoVoz").value;
+      let texto = document.getElementById("texto").value;
+      const tipo = document.getElementById("anime").value;
 
       if (!texto) {
-        alert("Digite um texto");
+        alert("Digite o texto do personagem!");
         return;
       }
 
-      const u = new SpeechSynthesisUtterance(texto);
-      u.lang = "pt-BR";
+      let pitch = 1;
+      let rate = 1;
 
-      // Ajuste simples
-      u.pitch = tipo === "fem" ? 1.3 : 0.8;
-      u.rate = 1;
+      if (tipo === "prota") {
+        pitch = 1.35;
+        rate = 1.15;
+      }
+      if (tipo === "vilao") {
+        pitch = 0.55;
+        rate = 0.75;
+      }
+      if (tipo === "tsundere") {
+        pitch = 1.6;
+        rate = 1.25;
+      }
+      if (tipo === "narrador") {
+        pitch = 0.85;
+        rate = 0.8;
+      }
+
+      // MAGIA ANIME: pausas + emoção
+      texto = texto
+        .replace(/!/g, "!!! ... ")
+        .replace(/\?/g, "? ... ")
+        .replace(/,/g, ", ... ")
+        .replace(/\./g, ". ... ");
+
+      const voz = new SpeechSynthesisUtterance(texto);
+      voz.lang = "pt-BR";
+      voz.pitch = pitch;
+      voz.rate = rate;
 
       speechSynthesis.cancel();
-      speechSynthesis.speak(u);
+      speechSynthesis.speak(voz);
     }
   </script>
 
