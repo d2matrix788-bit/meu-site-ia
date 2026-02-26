@@ -11,45 +11,110 @@
       text-align: center;
       padding: 20px;
     }
-    textarea, button {
+    textarea, button, select, a {
       width: 90%;
-      max-width: 400px;
+      max-width: 420px;
       margin-top: 10px;
       padding: 12px;
       font-size: 16px;
       border-radius: 6px;
       border: none;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
     }
     button {
       background: #7b2cff;
       color: white;
       cursor: pointer;
     }
+    select {
+      background: #1c1c1c;
+      color: white;
+    }
+    a {
+      background: #00ffcc;
+      color: #000;
+      text-decoration: none;
+      display: none;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
 
-  <h1>🔊 IA Texto em Voz</h1>
-  <p>Digite um texto e escute a voz</p>
+  <h1>🎙️ IA Texto em Voz</h1>
+  <p>Escolha a voz, fale e baixe o áudio</p>
 
   <textarea id="texto" rows="4" placeholder="Digite seu texto aqui..."></textarea>
+
+  <select id="vozes"></select>
+
   <button onclick="falar()">▶️ Falar</button>
+  <a id="download" download="voz.mp3">⬇️ Baixar áudio</a>
 
   <script>
-    function falar() {
+    let mediaRecorder;
+    let audioChunks = [];
+    let listaVozes = [];
+
+    function carregarVozes() {
+      listaVozes = speechSynthesis.getVoices();
+      const select = document.getElementById("vozes");
+      select.innerHTML = "";
+
+      listaVozes
+        .filter(v => v.lang.includes("pt"))
+        .forEach((voz, index) => {
+          const option = document.createElement("option");
+          option.value = index;
+          option.text = `${voz.name} (${voz.lang})`;
+          select.appendChild(option);
+        });
+    }
+
+    speechSynthesis.onvoiceschanged = carregarVozes;
+
+    async function falar() {
       const texto = document.getElementById("texto").value;
+      const vozIndex = document.getElementById("vozes").value;
 
       if (!texto) {
         alert("Digite um texto 🙂");
         return;
       }
 
-      const voz = new SpeechSynthesisUtterance(texto);
-      voz.lang = "pt-BR";
-      voz.rate = 1;
-      voz.pitch = 1;
+      const stream = await navigator.mediaDevices.getDisplayMedia({
+        audio: true,
+        video: false
+      });
 
-      speechSynthesis.speak(voz);
+      mediaRecorder = new MediaRecorder(stream);
+      audioChunks = [];
+
+      mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
+
+      mediaRecorder.onstop = () => {
+        const blob = new Blob(audioChunks, { type: "audio/mp3" });
+        const url = URL.createObjectURL(blob);
+        const link = document.getElementById("download");
+        link.href = url;
+        link.style.display = "block";
+      };
+
+      mediaRecorder.start();
+
+      const utterance = new SpeechSynthesisUtterance(texto);
+      utterance.voice = listaVozes[vozIndex];
+      utterance.rate = 1;
+      utterance.pitch = 1;
+
+      utterance.onend = () => {
+        mediaRecorder.stop();
+        stream.getTracks().forEach(track => track.stop());
+      };
+
+      speechSynthesis.speak(utterance);
     }
   </script>
 
