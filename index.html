@@ -1,1 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Minha IA</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #0f0f0f;
+      color: #ffffff;
+      text-align: center;
+      padding: 20px;
+    }
+    input, button {
+      width: 90%;
+      max-width: 400px;
+      padding: 12px;
+      margin-top: 10px;
+      border-radius: 6px;
+      border: none;
+      font-size: 16px;
+    }
+    button {
+      background: #7b2cff;
+      color: white;
+      cursor: pointer;
+    }
+    #resposta {
+      margin-top: 20px;
+      color: #00ffcc;
+      font-size: 18px;
+      min-height: 24px;
+    }
+  </style>
+</head>
+<body>
 
+  <h1>🤖 Minha IA</h1>
+  <p>Site de IA gratuito</p>
+
+  <input id="pergunta" placeholder="Digite algo..." />
+  <button onclick="responder()">Enviar</button>
+
+  <div id="resposta"></div>
+
+  <script>
+    function responder() {
+      const pergunta = document.getElementById("pergunta").value;
+      if (!pergunta) {
+        document.getElementById("resposta").innerText = "Digite alguma coisa 🙂";
+        return;
+      }
+      document.getElementById("resposta").innerText =
+        "Você digitou: " + pergunta + " (IA será conectada aqui)";
+    }
+  </script>
+
+</body>
+</html>
